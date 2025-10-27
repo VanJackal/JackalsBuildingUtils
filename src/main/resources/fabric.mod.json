@@ -1,25 +1,25 @@
 {
 	"schemaVersion": 1,
-	"id": "modid",
+	"id": "building-utils",
 	"version": "${version}",
-	"name": "Example mod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "Jackal's Building Utils",
+	"description": "Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util Build util ",
 	"authors": [
-		"Me!"
+		"VanJackal"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/VanJackal/JackalsBuildingUtils",
+		"sources": "https://github.com/VanJackal/JackalsBuildingUtils"
 	},
-	"license": "CC0-1.0",
+	"license": "AGPL-3.0",
 	"icon": "assets/modid/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.example.ExampleMod"
+			"com.njackal.BuildingUtils"
 		],
 		"client": [
-			"com.example.ExampleModClient"
+			"com.njackal.BuildingUtilsClient"
 		]
 	},
 	"mixins": [
