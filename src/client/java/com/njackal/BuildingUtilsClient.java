@@ -3,8 +3,9 @@ package com.njackal;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexRendering;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.util.math.Vec3d;
+import org.joml.Matrix4f;
 
 public class BuildingUtilsClient implements ClientModInitializer {
 	@Override
@@ -18,8 +19,15 @@ public class BuildingUtilsClient implements ClientModInitializer {
 			world.matrices().translate(-camera.x, -camera.y, -camera.z);
 			world.matrices().translate(0,75,0);
 
-			VertexRendering.drawFilledBox(world.matrices(),world.consumers().getBuffer(RenderLayer.getDebugFilledBox()),
-					0.25f,0.25f, 0.25f, .75f,.75f,.75f,1f,0,0,1f);
+			//VertexRendering.drawFilledBox(world.matrices(),world.consumers().getBuffer(RenderLayer.getDebugFilledBox()),
+			//		0.25f,0.25f, 0.25f, .75f,.75f,.75f,1f,0,0,1f);
+
+			VertexConsumer vc =world.consumers().getBuffer(RenderLayer.getDebugFilledBox());
+			Matrix4f matrix = world.matrices().peek().getPositionMatrix();
+			vc.vertex(matrix, 0,75,0).color(1f,0,0,1f);
+			vc.vertex(matrix,0,77,0).color(1f,0,0,1f);
+			vc.vertex(matrix,0,75,1).color(1f,0,0,1f);
+
 			world.matrices().pop();
 		});
 	}
