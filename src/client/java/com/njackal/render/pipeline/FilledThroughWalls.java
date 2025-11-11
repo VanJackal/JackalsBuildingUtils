@@ -19,6 +19,9 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
+
+import java.util.List;
 
 public class FilledThroughWalls {
     private static FilledThroughWalls INSTANCE;
@@ -42,12 +45,15 @@ public class FilledThroughWalls {
         return INSTANCE;
     }
 
-    public void extractAndDraw(WorldRenderContext context) {
-        renderWaypoint(context);
+    public void draw(
+            WorldRenderContext context,
+            List<Vector3f> vertices
+    ) {
+        fillBuffer(context, vertices);
         drawFilledThroughWalls(MinecraftClient.getInstance(), FILLED_THROUGH_WALLS);
     }
 
-    private void renderWaypoint(WorldRenderContext context) {
+    private void fillBuffer(WorldRenderContext context, List<Vector3f> vertices) {
         MatrixStack matrices = context.matrices();
         Vec3d camera = context.worldState().cameraRenderState.pos;
 
@@ -60,11 +66,10 @@ public class FilledThroughWalls {
             buffer = new BufferBuilder(ALLOCATOR, FILLED_THROUGH_WALLS.getVertexFormatMode(), FILLED_THROUGH_WALLS.getVertexFormat());
         }
 
-        //VertexRendering.drawFilledBox(matrices, buffer, 0f, 75, 0f, 1f, 76f, 1f, 0f, 1f, 0f, 0.5f);
         Matrix4f matrix = matrices.peek().getPositionMatrix();
-        buffer.vertex(matrix, 0, 75, 0).color(0,0,1f,1f);
-        buffer.vertex(matrix, 0, 77, 0).color(0,0,1f,1f);
-        buffer.vertex(matrix, 0, 75, 3).color(0,0,1f,1f);
+        for (Vector3f v : vertices) {
+            buffer.vertex(matrix, v.x, v.y, v.z).color(0f,0f,1f,1f);
+        }
 
         matrices.pop();
     }
