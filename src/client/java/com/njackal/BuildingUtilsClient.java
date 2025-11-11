@@ -37,15 +37,21 @@ public class BuildingUtilsClient implements ClientModInitializer {
                     .build()
     );
     private static final BufferAllocator ALLOCATOR = new BufferAllocator(RenderLayer.CUTOUT_BUFFER_SIZE);
+    private static BuildingUtilsClient instance;
     private BufferBuilder buffer;
 
     private static final Vector4f COLOR_MODULATOR = new Vector4f(1f, 1f, 1f, 1f);
     private MappableRingBuffer vertexBuffer;
-    
-	@Override
+
+    public static BuildingUtilsClient getInstance() {
+        return instance;
+    }
+
+    @Override
 	public void onInitializeClient() {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 		BuildingUtils.LOGGER.info("Client Initialized");
+        instance = this;
         
         WorldRenderEvents.AFTER_ENTITIES.register(this::extractAndDraw);
         
@@ -167,6 +173,15 @@ public class BuildingUtilsClient implements ClientModInitializer {
         }
 
         builtBuffer.close();
+    }
+
+    public void close() {
+        ALLOCATOR.close();
+
+        if (vertexBuffer != null) {
+            vertexBuffer.close();
+            vertexBuffer = null;
+        }
     }
     
 }
