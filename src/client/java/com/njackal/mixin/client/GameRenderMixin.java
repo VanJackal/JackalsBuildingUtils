@@ -1,7 +1,6 @@
 package com.njackal.mixin.client;
 
-import com.njackal.BuildingUtils;
-import com.njackal.BuildingUtilsClient;
+import com.njackal.render.pipeline.FilledThroughWalls;
 import net.minecraft.client.render.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -12,6 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class GameRenderMixin {
     @Inject(method = "close", at = @At("RETURN"))
     private void onGameRendererClose(CallbackInfo ci) {
-        BuildingUtilsClient.getInstance().close();
+        FilledThroughWalls.getInstance().close();
     }
 }
