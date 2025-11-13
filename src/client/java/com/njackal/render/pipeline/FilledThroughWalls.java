@@ -28,7 +28,7 @@ public class FilledThroughWalls {
     private static final RenderPipeline FILLED_THROUGH_WALLS = RenderPipelines.register(
             RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
                     .withLocation(Identifier.of(BuildingUtils.MOD_ID, "pipeline/debug_filled_box_through_walls"))
-                    .withVertexFormat(VertexFormats.POSITION_COLOR, VertexFormat.DrawMode.TRIANGLE_STRIP)
+                    .withVertexFormat(VertexFormats.POSITION_COLOR, VertexFormat.DrawMode.TRIANGLES)
                     .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
                     .build()
     );
