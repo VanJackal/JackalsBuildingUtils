@@ -29,7 +29,7 @@ public class FilledThroughWalls {
             RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
                     .withLocation(Identifier.of(BuildingUtils.MOD_ID, "pipeline/debug_filled_box_through_walls"))
                     .withVertexFormat(VertexFormats.POSITION_COLOR, VertexFormat.DrawMode.TRIANGLES)
-                    .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+                    .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST)
                     .build()
     );
     private static final BufferAllocator ALLOCATOR = new BufferAllocator(RenderLayer.CUTOUT_BUFFER_SIZE);
@@ -67,8 +67,13 @@ public class FilledThroughWalls {
         }
 
         Matrix4f matrix = matrices.peek().getPositionMatrix();
+        int count = 0;
         for (Vector3f v : vertices) {
-            buffer.vertex(matrix, v.x, v.y, v.z).color(0f,0f,1f,1f);
+            if(count++%2 == 0) {
+                buffer.vertex(matrix, v.x, v.y, v.z).color(0f,0f,1f,1f);
+            } else {
+                buffer.vertex(matrix, v.x, v.y, v.z).color(1f,0f,0f,1f);
+            }
         }
 
         matrices.pop();
