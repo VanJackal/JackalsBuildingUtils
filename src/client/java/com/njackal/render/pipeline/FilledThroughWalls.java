@@ -69,8 +69,10 @@ public class FilledThroughWalls {
         Matrix4f matrix = matrices.peek().getPositionMatrix();
         int count = 0;
         for (Vector3f v : vertices) {
-            if(count++%2 == 0) {
+            if(count++%3 == 2) {
                 buffer.vertex(matrix, v.x, v.y, v.z).color(0f,0f,1f,1f);
+            } else if(count%3 == 1){
+                buffer.vertex(matrix, v.x, v.y, v.z).color(0f,1f,0f,1f);
             } else {
                 buffer.vertex(matrix, v.x, v.y, v.z).color(1f,0f,0f,1f);
             }
