@@ -1,12 +1,9 @@
 package com.njackal;
 
-import com.njackal.placement.Placement;
-import com.njackal.placement.PlacementData;
-import com.njackal.placement.Transform;
+import com.njackal.placement.*;
 import com.njackal.render.pipeline.FilledThroughWalls;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
-import org.joml.Vector3f;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -18,6 +15,7 @@ public class BuildingUtilsClient implements ClientModInitializer {
     // mod-specific file directories
     public static final String BASE_PATH = "BuildingUtils";
     public static final String MODEL_PATH = BASE_PATH +"/models";
+    public static final String PLACEMENT_PATH = BASE_PATH +"/placements";
 
 
     public static BuildingUtilsClient getInstance() {
@@ -30,24 +28,7 @@ public class BuildingUtilsClient implements ClientModInitializer {
 		BuildingUtils.LOGGER.info("Client Initialized");
         instance = this;
         FilledThroughWalls fill = FilledThroughWalls.getInstance();
-        List<PlacementData> placementData = List.of(
-                new PlacementData(
-                        new Transform(
-                            new Vector3f(0f, 0f, 0f),
-                            new Vector3f(0f, 0f, 0f),
-                            new Vector3f(1f, 1f, 1f)
-                        ),
-                        MODEL_PATH + "/testMonkey.obj"
-                ),
-                new PlacementData(
-                        new Transform(
-                                new Vector3f(0f, 5f, 0f),
-                                new Vector3f(0f, 0.7853982f, 0f),
-                                new Vector3f(5f, 1f, 1f)
-                        ),
-                        MODEL_PATH + "/testMonkey.obj"
-                )
-        );
+        List<PlacementData> placementData = PlacementManager.getInstance().loadPlacementsFromDisk();
 
         //init placements
         List<Placement> placements = new LinkedList<>();
