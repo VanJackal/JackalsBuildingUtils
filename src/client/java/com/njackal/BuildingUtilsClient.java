@@ -1,17 +1,15 @@
 package com.njackal;
 
+import com.njackal.placement.Placement;
 import com.njackal.placement.PlacementData;
 import com.njackal.placement.Transform;
-import com.njackal.render.model.Model;
-import com.njackal.render.model.loader.ModelLoader;
-import com.njackal.render.model.loader.ObjLoader;
 import com.njackal.render.pipeline.FilledThroughWalls;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
 import org.joml.Vector3f;
 
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.util.LinkedList;
 import java.util.List;
 
 public class BuildingUtilsClient implements ClientModInitializer {
@@ -32,9 +30,7 @@ public class BuildingUtilsClient implements ClientModInitializer {
 		BuildingUtils.LOGGER.info("Client Initialized");
         instance = this;
         FilledThroughWalls fill = FilledThroughWalls.getInstance();
-        ModelLoader loader = ObjLoader.getInstance();
-        Model model;
-        List<PlacementData> placements = List.of(
+        List<PlacementData> placementData = List.of(
                 new PlacementData(
                         new Transform(
                             new Vector3f(0f, 0f, 0f),
@@ -52,17 +48,23 @@ public class BuildingUtilsClient implements ClientModInitializer {
                         MODEL_PATH + "/testMonkey.obj"
                 )
         );
-        try {
-            model = loader.load(Paths.get(MODEL_PATH + "/testMonkey.obj"));
-            WorldRenderEvents.AFTER_ENTITIES.register(context -> {
-                for (PlacementData placement : placements) {
-                    fill.draw(context, model.vertices(), placement.transform());
-                }
-            });
-        } catch (IOException e) {
-            BuildingUtils.LOGGER.error("Failed to load model");
-            e.printStackTrace();
+
+        //init placements
+        List<Placement> placements = new LinkedList<>();
+        for (PlacementData data : placementData ) {
+            try {
+                placements.add(Placement.fromData(data));
+            } catch (IOException e) {
+                BuildingUtils.LOGGER.error("Failed to load model: {}", data.model());
+                e.printStackTrace();
+            }
         }
+
+        WorldRenderEvents.AFTER_ENTITIES.register(context -> {
+            for (Placement placement : placements) {
+                fill.draw(context, placement.model().vertices(), placement.transform());
+            }
+        });
 	}
     
 
