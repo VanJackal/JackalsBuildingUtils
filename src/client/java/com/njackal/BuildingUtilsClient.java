@@ -1,5 +1,7 @@
 package com.njackal;
 
+import com.njackal.placement.PlacementData;
+import com.njackal.placement.Transform;
 import com.njackal.render.model.Model;
 import com.njackal.render.model.loader.ModelLoader;
 import com.njackal.render.model.loader.ObjLoader;
@@ -32,23 +34,35 @@ public class BuildingUtilsClient implements ClientModInitializer {
         FilledThroughWalls fill = FilledThroughWalls.getInstance();
         ModelLoader loader = ObjLoader.getInstance();
         Model model;
+        List<PlacementData> placements = List.of(
+                new PlacementData(
+                        new Transform(
+                            new Vector3f(0f, 0f, 0f),
+                            new Vector3f(0f, 0f, 0f),
+                            new Vector3f(1f, 1f, 1f)
+                        ),
+                        MODEL_PATH + "/testMonkey.obj"
+                ),
+                new PlacementData(
+                        new Transform(
+                                new Vector3f(0f, 5f, 0f),
+                                new Vector3f(0f, 0.7853982f, 0f),
+                                new Vector3f(5f, 1f, 1f)
+                        ),
+                        MODEL_PATH + "/testMonkey.obj"
+                )
+        );
         try {
             model = loader.load(Paths.get(MODEL_PATH + "/testMonkey.obj"));
             WorldRenderEvents.AFTER_ENTITIES.register(context -> {
-                fill.draw(context, model.vertices());
+                for (PlacementData placement : placements) {
+                    fill.draw(context, model.vertices(), placement.transform());
+                }
             });
         } catch (IOException e) {
             BuildingUtils.LOGGER.error("Failed to load model");
             e.printStackTrace();
         }
-
-        WorldRenderEvents.AFTER_ENTITIES.register(context -> {
-            fill.draw(context, List.of(
-                    new Vector3f(0f, 75f, 0f),
-                    new Vector3f(0f, 77f, 0f),
-                    new Vector3f(0f, 75f, 3f)
-            ));
-        });
 	}
     
 

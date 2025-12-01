@@ -5,6 +5,7 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DepthTestFunction;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.njackal.BuildingUtils;
+import com.njackal.placement.Transform;
 import com.njackal.render.DrawHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
@@ -19,6 +20,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Quaternionfc;
 import org.joml.Vector3f;
 
 import java.util.List;
@@ -47,13 +50,14 @@ public class FilledThroughWalls {
 
     public void draw(
             WorldRenderContext context,
-            List<Vector3f> vertices
+            List<Vector3f> vertices,
+            Transform transform
     ) {
-        fillBuffer(context, vertices);
+        fillBuffer(context, vertices, transform);
         drawFilledThroughWalls(MinecraftClient.getInstance(), FILLED_THROUGH_WALLS);
     }
 
-    private void fillBuffer(WorldRenderContext context, List<Vector3f> vertices) {
+    private void fillBuffer(WorldRenderContext context, List<Vector3f> vertices, Transform transform) {
         MatrixStack matrices = context.matrices();
         Vec3d camera = context.worldState().cameraRenderState.pos;
 
@@ -61,6 +65,11 @@ public class FilledThroughWalls {
 
         matrices.push();
         matrices.translate(-camera.x, -camera.y, -camera.z);
+        matrices.translate(transform.position().x, transform.position().y, transform.position().z);
+        Quaternionfc rotation =
+                new Quaternionf().rotateXYZ(transform.rotation().x, transform.rotation().y, transform.rotation().z);
+        matrices.multiply(rotation);
+        matrices.scale(transform.scale().x, transform.scale().y, transform.scale().z);
 
         if (buffer == null) {
             buffer = new BufferBuilder(ALLOCATOR, FILLED_THROUGH_WALLS.getVertexFormatMode(), FILLED_THROUGH_WALLS.getVertexFormat());
